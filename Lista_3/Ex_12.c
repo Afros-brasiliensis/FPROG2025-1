@@ -28,6 +28,7 @@ int main() {
       break;
     case 4:
       printf("Sua categoria eh Juvenil B");
+      break;
     case 5:
       printf("Sua categoria eh senior");
       break;
