@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentação C++</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      background-color: #121212;
+      color: #fff;
+    }
+
+    nav {
+      width: 250px;
+      background-color: #1f1f1f;
+      height: 100vh;
+      overflow-y: auto;
+      position: fixed;
+      padding-top: 20px;
+    }
+
+    nav a {
+      display: block;
+      padding: 12px 20px;
+      color: #ccc;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      background-color: #333;
+      color: #fff;
+    }
+
+    nav .submenu {
+      display: none;
+      background-color: #2a2a2a;
+    }
+
+    nav .has-submenu:hover .submenu {
+      display: block;
+    }
+
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+      flex: 1;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section:target {
+      display: block;
+    }
+
+    h2 {
+      color: #42a5f5;
+    }
+
+    code {
+      background: #2c2c2c;
+      padding: 4px 6px;
+      border-radius: 5px;
+      color: #fff;
+    }
+
+    pre {
+      background: #2c2c2c;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#intro">📘 Introdução</a>
+  <div class="has-submenu">
+    <a href="#">📌 Instalação ▸</a>
+    <div class="submenu">
+      <a href="#inst-win">Windows</a>
+      <a href="#inst-linux">Linux</a>
+      <a href="#inst-mac">Mac</a>
+    </div>
+  </div>
+  <a href="#estrutura">🧱 Estrutura</a>
+  <a href="#comandos">🔧 Comandos Básicos</a>
+  <a href="#bibliotecas">🧰 Bibliotecas</a>
+  <a href="#integracoes">🔌 Integrações</a>
+  <a href="#dicas">🚀 Boas Práticas</a>
+  <a href="#todo">🛠️ To-do</a>
+</nav>
+
+<div class="content">
+
+  <div id="intro" class="section">
+    <h2>📘 Introdução ao C++</h2>
+    <p>C++ é uma linguagem compilada, poderosa e orientada a objetos. Muito usada em sistemas, jogos e aplicações críticas.</p>
+  </div>
+
+  <div id="inst-win" class="section">
+    <h2>📌 Instalação no Windows</h2>
+    <p>Use o <code>MinGW</code>. Instale de <a href="https://sourceforge.net/projects/mingw/" target="_blank">https://sourceforge.net/projects/mingw/</a>.</p>
+    <pre>g++ arquivo.cpp -o programa</pre>
+  </div>
+
+  <div id="inst-linux" class="section">
+    <h2>📌 Instalação no Linux</h2>
+    <pre>
+sudo apt update
+sudo apt install g++
+    </pre>
+  </div>
+
+  <div id="inst-mac" class="section">
+    <h2>📌 Instalação no Mac</h2>
+    <pre>xcode-select --install</pre>
+  </div>
+
+  <div id="estrutura" class="section">
+    <h2>🧱 Estrutura Básica</h2>
+    <pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Olá, mundo!" &lt;&lt; endl;
+    return 0;
+}
+    </pre>
+  </div>
+
+  <div id="comandos" class="section">
+    <h2>🔧 Comandos Básicos</h2>
+    <pre>
+int a = 10;
+float b = 3.14;
+if (a > 5) {
+    cout &lt;&lt; "Maior que 5";
+}
+    </pre>
+  </div>
+
+  <div id="bibliotecas" class="section">
+    <h2>🧰 Bibliotecas Comuns</h2>
+    <ul>
+      <li><code>#include &lt;iostream&gt;</code> — Entrada e saída</li>
+      <li><code>#include &lt;vector&gt;</code> — Vetores dinâmicos</li>
+      <li><code>#include &lt;map&gt;</code> — Dicionários</li>
+    </ul>
+  </div>
+
+  <div id="integracoes" class="section">
+    <h2>🔌 Integrações com outras linguagens</h2>
+    <p>Exemplo com Python (pybind11):</p>
+    <pre>
+#include &lt;pybind11/pybind11.h&gt;
+int soma(int a, int b) { return a + b; }
+PYBIND11_MODULE(modulo, m) {
+  m.def("soma", &soma);
+}
+    </pre>
+  </div>
+
+  <div id="dicas" class="section">
+    <h2>🚀 Dicas e Boas Práticas</h2>
+    <ul>
+      <li>Use <code>#pragma once</code> em headers</li>
+      <li>Prefira <code>std::vector</code> a arrays</li>
+      <li>Evite <code>using namespace std;</code> em headers</li>
+    </ul>
+  </div>
+
+  <div id="todo" class="section">
+    <h2>🛠️ Plano de Estudo (To-do)</h2>
+    <ul>
+      <li>Estudar orientação a objetos</li>
+      <li>Praticar ponteiros</li>
+      <li>Fazer mini-projetos</li>
+      <li>Aprender templates e STL</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>
