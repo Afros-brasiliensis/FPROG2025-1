@@ -19,12 +19,9 @@ typedef struct {
     float vida;
 } Personagem;
 
-Personagem times[5][2] = {
-    {{Guerreiro, 20.0, 10.0, 100.0}, {Guerreiro, 20.0, 10.0, 100.0}},
-    {{Mago, 30.0, 5.0, 100.0}, {Mago, 30.0, 5.0, 100.0}},
-    {{Caçador, 18.0 , 8.0, 100.0}, {Caçador, 18.0 , 8.0, 100.0}},
-    {{Paladino, 15.0, 12.0, 100.0}, {Paladino, 15.0, 12.0, 100.0}},
-    {{Bárbaro, 25.0, 6.0, 100.0}, {Bárbaro, 25.0, 6.0, 100.0}}
+Personagem times[2][5] = {
+    {{Guerreiro, 20.0, 10.0, 100.0}, {Mago, 30.0, 5.0, 100.0}, {Caçador, 18.0 , 8.0, 100.0}, {Paladino, 15.0, 12.0, 100.0}, {Bárbaro, 25.0, 6.0, 100.0}},
+    {{Guerreiro, 20.0, 10.0, 100.0}, {Mago, 30.0, 5.0, 100.0}, {Caçador, 18.0 , 8.0, 100.0}, {Paladino, 15.0, 12.0, 100.0}, {Bárbaro, 25.0, 6.0, 100.0}}
 };
 
 void imprimir_personagem(Personagem p) {
@@ -33,7 +30,6 @@ void imprimir_personagem(Personagem p) {
     printf("  %-9s | Vida: %6.1f | Status: %s\n", nomes[p.classe], p.vida, status);
 }
 
-// Função que sorteia um alvo aleatório entre os vivos do time adversário
 int sortear_alvo(Personagem time[], int tamanho) {
     int vivos[5];
     int qnt_vivos = 0;
@@ -50,7 +46,6 @@ int sortear_alvo(Personagem time[], int tamanho) {
     return vivos[alvo];
 }
 
-// Função que retorna o índice do personagem com maior razão vida/ataque
 int personagem_atacante(Personagem time[], int qnt_integrantes) {
     int quemataca = -1;
     float maior_razao = -1.0;
@@ -66,6 +61,14 @@ int personagem_atacante(Personagem time[], int qnt_integrantes) {
     return quemataca;
 }
 
+void tentar_regenerar(Personagem* p, float vida_anterior) {
+    if (p->classe == Paladino && p->vida > 0 && rand() % 100 < 30) {
+        float recuperada = (vida_anterior - p->vida) * 0.2;
+        p->vida += recuperada;
+        printf("Habilidade especial: Regeneração! Recuperou %.1f de vida.\n", recuperada);
+    }
+}
+
 float calcular_dano(Personagem atacante, Personagem defensor) {
     float dano;
     int chance;
@@ -78,7 +81,6 @@ float calcular_dano(Personagem atacante, Personagem defensor) {
         defesa = defensor.defesa;
     }
 
-    // chance de errar (exceto Bárbaro)
     if (atacante.classe != Bárbaro && rand() % 100 < 20) {
         printf("Ataque errou!\n");
         return 0;
@@ -111,35 +113,74 @@ float calcular_dano(Personagem atacante, Personagem defensor) {
                 dano += calcular_dano(atacante, defensor);
             }
             break;
+        default:
+            break;
     }
 
     printf("Dano causado: %.1f\n", dano);
     return dano;
 }
 
+bool time_vivo(Personagem time[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (time[i].vida > 0) return true;
+    }
+    return false;
+}
+
+void imprimir_estado_times() {
+    for (int t = 0; t < 2; t++) {
+        printf("Time %d:\n", t + 1);
+        for (int j = 0; j < 5; j++) {
+            imprimir_personagem(times[t][j]);
+        }
+    }
+}
+
 int main() {
     srand(time(NULL));
+    int rodada = 1;
+    int turno = rand() % 2;
 
-    for (int i = 0; i < 5; i++) {
-        int start = rand() % 2;
-        int last = 1 - start;
+    while (time_vivo(times[0], 5) && time_vivo(times[1], 5)) {
+        printf("\n>>> Rodada %d:\n", rodada);
 
-        int quemataca = personagem_atacante(times[start], 5);
-        int alvo = sortear_alvo(times[last], 5);
+        int quemataca = personagem_atacante(times[turno], 5);
+        int alvo = sortear_alvo(times[1 - turno], 5);
 
         if (quemataca == -1 || alvo == -1) {
             printf("Nenhum ataque nesta rodada: algum time está sem membros vivos.\n");
-            continue;
+            break;
         }
 
-        float dano = calcular_dano(times[quemataca][start], times[alvo][last]);
+        printf("Time %d — ", turno + 1);
+        imprimir_personagem(times[turno][quemataca]);
+        printf("ataca ");
+        imprimir_personagem(times[1 - turno][alvo]);
 
-        times[alvo][last].vida -= dano;
-        if (times[alvo][last].vida < 0)
-            times[alvo][last].vida = 0;
+        float vida_anterior = times[1 - turno][alvo].vida;
+        float dano = calcular_dano(times[turno][quemataca], times[1 - turno][alvo]);
 
-        printf("Vida restante do alvo: %.2f\n", times[alvo][last].vida);
+        times[1 - turno][alvo].vida -= dano;
+        if (times[1 - turno][alvo].vida < 0)
+            times[1 - turno][alvo].vida = 0;
+
+        tentar_regenerar(&times[1 - turno][alvo], vida_anterior);
+
+        imprimir_estado_times();
+
+        rodada++;
+        turno = 1 - turno;
+    }
+
+    if (!time_vivo(times[0], 5) && !time_vivo(times[1], 5)) {
+        printf("\nResultado: Empate!\n");
+    } else if (time_vivo(times[0], 5)) {
+        printf("\nResultado: Time 1 venceu!\n");
+    } else {
+        printf("\nResultado: Time 2 venceu!\n");
     }
 
     return 0;
 }
+
